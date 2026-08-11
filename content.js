@@ -93,7 +93,11 @@
         sub.textContent = [entry.username, entry.projectName].filter(Boolean).join(" · ")
         row.appendChild(title)
         row.appendChild(sub)
-        row.addEventListener("click", () => {
+        // mousedown, non click: il click arriva dopo il blur del campo e
+        // certi siti nel frattempo rifanno il DOM, perdendo la selezione.
+        row.addEventListener("mousedown", (e) => {
+          e.preventDefault()
+          e.stopPropagation()
           if (usernameField && entry.username) fillReact(usernameField, entry.username)
           if (passwordField) fillReact(passwordField, entry.password)
           closeDropdown()

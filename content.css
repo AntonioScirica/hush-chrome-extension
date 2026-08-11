@@ -21,7 +21,8 @@
   position: absolute;
   z-index: 2147483647;
   box-sizing: border-box;
-  max-height: 260px;
+  /* ~3 voci, poi si scorre */
+  max-height: 152px;
   overflow-y: auto;
   background: #f4f2eb;
   border: 1.2px solid #222220;
