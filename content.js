@@ -43,7 +43,10 @@
     const r = field.getBoundingClientRect()
     box.style.left = window.scrollX + r.left + "px"
     box.style.width = r.width + "px"
-    box.style.top = window.scrollY + r.top - box.offsetHeight - 4 + "px"
+    const above = r.top - box.offsetHeight - 4
+    // Se sopra il campo non c'è spazio (campo vicino al bordo della
+    // pagina) il menu finirebbe fuori schermo: si mette sotto.
+    box.style.top = window.scrollY + (above >= 0 ? above : r.bottom + 4) + "px"
   }
 
   function showDropdown(field, passwordField, usernameField) {
