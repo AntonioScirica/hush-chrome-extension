@@ -125,24 +125,6 @@
     return /email|user|phone|identifier|login/.test(hay)
   }
 
-  // Il rect del campo da solo non basta: Netflix & co. nascondono il campo
-  // password collassando un antenato ad altezza zero, e il campo continua a
-  // dichiarare le sue misure. Si risale la catena.
-  function isVisible(el) {
-    for (let n = el; n && n !== document.documentElement; n = n.parentElement) {
-      const r = n.getBoundingClientRect()
-      if (r.width === 0 || r.height === 0) return false
-    }
-    return true
-  }
-
-  // Solo password VISIBILI: molti siti (Netflix…) tengono nel DOM un campo
-  // password nascosto anche nello schermo che chiede solo l'email.
-  function hasPasswordInScope(el) {
-    const scope = el.form || document
-    return Array.from(scope.querySelectorAll('input[type="password"]')).some(isVisible)
-  }
-
   function attach(field, passwordField) {
     if (seen.has(field)) return
     seen.add(field)
@@ -167,9 +149,10 @@
 
   function scan() {
     document.querySelectorAll('input[type="password"]').forEach((f) => attach(f, f))
+    // Campi email/utente agganciati sempre, anche accanto a una password:
+    // lì si riempie solo l'email, la password solo dal suo campo.
     document.querySelectorAll("input").forEach((el) => {
       if ((el.type || "text").toLowerCase() === "password") return
-      if (hasPasswordInScope(el)) return
       if (!looksLikeUsernameField(el)) return
       attach(el, null)
     })
