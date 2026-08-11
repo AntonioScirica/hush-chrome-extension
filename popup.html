@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body {
+      margin: 0;
+      width: 280px;
+      font-family: -apple-system, sans-serif;
+      background: #f4f2eb;
+      color: #222220;
+    }
+    .wrap { padding: 16px; }
+    h1 { font-size: 14px; margin: 0 0 8px; }
+    p { font-size: 12px; opacity: 0.7; line-height: 1.5; margin: 0 0 10px; }
+    .stato { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .pallino { width: 8px; height: 8px; border-radius: 50%; background: #b84034; flex-shrink: 0; }
+    .pallino.ok { background: #4c8c5c; }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      padding: 8px 10px;
+      border: 1.2px solid #222220;
+      background: #fff;
+      margin-bottom: 8px;
+    }
+    button {
+      width: 100%;
+      font-family: -apple-system, sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 9px;
+      border: 1.2px solid #222220;
+      background: #f5b815;
+      cursor: pointer;
+    }
+    a { color: #222220; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="stato"><span class="pallino" id="pallino"></span><h1 id="titolo">Hush</h1></div>
+    <p id="testo">Verifico…</p>
+    <div id="formToken" style="display:none">
+      <p>Apri Hush sul Mac → Impostazioni → Estensione Chrome, copia il token e incollalo qui.</p>
+      <input id="token" type="text" placeholder="token" />
+      <button id="salva">salva</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
