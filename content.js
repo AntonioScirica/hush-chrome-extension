@@ -74,15 +74,20 @@
         positionAbove(box, field)
         return
       }
-      if (!res.entries || res.entries.length === 0) {
+      // Campo solo-email (password in un altro schermo): senza username
+      // salvato non c'è nulla da riempire qui, inutile mostrare la voce.
+      const entries = (res.entries || []).filter((e) => passwordField || e.username)
+      if (entries.length === 0) {
         const empty = document.createElement("div")
         empty.className = "hush-empty"
-        empty.textContent = "Nessuna voce per questo sito."
+        empty.textContent = res.entries && res.entries.length > 0
+          ? "Le voci di questo sito non hanno un'email salvata: aggiungila in Hush."
+          : "Nessuna voce per questo sito."
         box.appendChild(empty)
         positionAbove(box, field)
         return
       }
-      res.entries.forEach((entry) => {
+      entries.forEach((entry) => {
         const row = document.createElement("div")
         row.className = "hush-row"
         const title = document.createElement("span")
