@@ -36,6 +36,7 @@
   function messaggioErrore(errore) {
     if (errore === "non_collegato") return "Incolla il token di Hush nel popup dell'estensione."
     if (errore === "locked") return "Hush è chiuso: apri l'app sul Mac."
+    if (errore === "ricarica") return "Estensione aggiornata: ricarica la pagina."
     return "Hush non risponde: apri l'app."
   }
 
@@ -63,7 +64,12 @@
     openField = field
     positionAbove(box, field)
 
-    chrome.runtime.sendMessage({ type: "matches", host: location.hostname }).then((res) => {
+    // Dopo un aggiornamento dell'estensione le pagine già aperte tengono il
+    // vecchio script col canale morto: senza catch resterebbe "cerco…" per sempre.
+    Promise.resolve()
+      .then(() => chrome.runtime.sendMessage({ type: "matches", host: location.hostname }))
+      .catch(() => ({ error: "ricarica" }))
+      .then((res) => {
       if (openDropdown !== box) return
       box.textContent = ""
       if (!res || res.error) {
