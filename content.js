@@ -79,7 +79,7 @@
         row.appendChild(sub)
         row.addEventListener("click", () => {
           if (usernameField && entry.username) fillReact(usernameField, entry.username)
-          fillReact(passwordField, entry.password)
+          if (passwordField) fillReact(passwordField, entry.password)
           closeDropdown()
         })
         box.appendChild(row)
@@ -94,9 +94,26 @@
     el.style.left = window.scrollX + r.left + "px"
   }
 
-  function attachButton(passwordField) {
-    if (seen.has(passwordField)) return
-    seen.add(passwordField)
+  // Alcuni login (X, Google…) chiedono email/utente in uno schermo e la
+  // password solo dopo — niente campo password da agganciare finché non si
+  // arriva lì. Riconosciamo comunque il campo utente da solo.
+  function looksLikeUsernameField(el) {
+    const type = (el.type || "text").toLowerCase()
+    if (!["text", "email", "tel"].includes(type)) return false
+    const auto = (el.autocomplete || "").toLowerCase()
+    if (auto === "username" || auto === "email") return true
+    const hay = [el.name, el.id, el.placeholder].join(" ").toLowerCase()
+    return /email|user|phone|identifier|login/.test(hay)
+  }
+
+  function hasPasswordInScope(el) {
+    const scope = el.form || document
+    return !!scope.querySelector('input[type="password"]')
+  }
+
+  function attach(field, passwordField) {
+    if (seen.has(field)) return
+    seen.add(field)
 
     const button = document.createElement("div")
     button.className = "hush-button"
@@ -105,7 +122,7 @@
     document.documentElement.appendChild(button)
 
     function reposition() {
-      const r = passwordField.getBoundingClientRect()
+      const r = field.getBoundingClientRect()
       if (r.width === 0 && r.height === 0) { button.style.display = "none"; return }
       button.style.display = "flex"
       button.style.top = window.scrollY + r.top + (r.height - 22) / 2 + "px"
@@ -115,23 +132,30 @@
     window.addEventListener("scroll", reposition, true)
     window.addEventListener("resize", reposition)
 
+    function open() {
+      const usernameField = passwordField ? usernameFieldFor(passwordField) : field
+      showDropdown(button, passwordField, usernameField)
+    }
+
     button.addEventListener("mousedown", (e) => {
       e.preventDefault()
       e.stopPropagation()
-      const usernameField = usernameFieldFor(passwordField)
-      showDropdown(button, passwordField, usernameField)
+      open()
     })
 
     // Compare da sé al focus, come i suggerimenti nativi del browser —
     // niente bisogno di cliccare il lucchetto ogni volta.
-    passwordField.addEventListener("focus", () => {
-      const usernameField = usernameFieldFor(passwordField)
-      showDropdown(button, passwordField, usernameField)
-    })
+    field.addEventListener("focus", open)
   }
 
   function scan() {
-    document.querySelectorAll('input[type="password"]').forEach(attachButton)
+    document.querySelectorAll('input[type="password"]').forEach((f) => attach(f, f))
+    document.querySelectorAll("input").forEach((el) => {
+      if ((el.type || "text").toLowerCase() === "password") return
+      if (hasPasswordInScope(el)) return
+      if (!looksLikeUsernameField(el)) return
+      attach(el, null)
+    })
   }
 
   document.addEventListener("mousedown", (e) => {
