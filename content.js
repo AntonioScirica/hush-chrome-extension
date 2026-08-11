@@ -1,11 +1,14 @@
-// Trova i campi di login nella pagina, ci appoggia il tasto Hush, e compila
-// utente/password quando l'utente sceglie una voce dal menu.
+// Trova i campi di login nella pagina e compila utente/password quando
+// l'utente sceglie una voce dal menu, che compare da sé sopra il campo
+// appena lo tocchi — niente lucchetto da cliccare.
 (function () {
   const seen = new WeakSet()
   let openDropdown = null
+  let openField = null
 
   function closeDropdown() {
     if (openDropdown) { openDropdown.remove(); openDropdown = null }
+    openField = null
   }
 
   function usernameFieldFor(passwordField) {
@@ -36,18 +39,26 @@
     return "Hush non risponde: apri l'app."
   }
 
-  function showDropdown(anchor, passwordField, usernameField) {
+  function positionAbove(box, field) {
+    const r = field.getBoundingClientRect()
+    box.style.left = window.scrollX + r.left + "px"
+    box.style.width = r.width + "px"
+    box.style.top = window.scrollY + r.top - box.offsetHeight - 4 + "px"
+  }
+
+  function showDropdown(field, passwordField, usernameField) {
     closeDropdown()
     const box = document.createElement("div")
     box.className = "hush-dropdown"
-    positionNear(box, anchor)
-    box.textContent = ""
+    box.style.position = "absolute"
     const loading = document.createElement("div")
     loading.className = "hush-empty"
     loading.textContent = "Hush · cerco…"
     box.appendChild(loading)
     document.documentElement.appendChild(box)
     openDropdown = box
+    openField = field
+    positionAbove(box, field)
 
     chrome.runtime.sendMessage({ type: "matches", host: location.hostname }).then((res) => {
       if (openDropdown !== box) return
@@ -57,6 +68,7 @@
         empty.className = "hush-empty"
         empty.textContent = messaggioErrore(res && res.error)
         box.appendChild(empty)
+        positionAbove(box, field)
         return
       }
       if (!res.entries || res.entries.length === 0) {
@@ -64,6 +76,7 @@
         empty.className = "hush-empty"
         empty.textContent = "Nessuna voce per questo sito."
         box.appendChild(empty)
+        positionAbove(box, field)
         return
       }
       res.entries.forEach((entry) => {
@@ -84,14 +97,8 @@
         })
         box.appendChild(row)
       })
+      positionAbove(box, field)
     })
-  }
-
-  function positionNear(el, anchor) {
-    const r = anchor.getBoundingClientRect()
-    el.style.position = "absolute"
-    el.style.top = window.scrollY + r.bottom + 4 + "px"
-    el.style.left = window.scrollX + r.left + "px"
   }
 
   // Alcuni login (X, Google…) chiedono email/utente in uno schermo e la
@@ -115,37 +122,22 @@
     if (seen.has(field)) return
     seen.add(field)
 
-    const button = document.createElement("div")
-    button.className = "hush-button"
-    button.textContent = "🔒"
-    button.title = "Compila con Hush"
-    document.documentElement.appendChild(button)
-
     function reposition() {
-      const r = field.getBoundingClientRect()
-      if (r.width === 0 && r.height === 0) { button.style.display = "none"; return }
-      button.style.display = "flex"
-      button.style.top = window.scrollY + r.top + (r.height - 22) / 2 + "px"
-      button.style.left = window.scrollX + r.right - 26 + "px"
+      if (openDropdown && openField === field) positionAbove(openDropdown, field)
     }
-    reposition()
     window.addEventListener("scroll", reposition, true)
     window.addEventListener("resize", reposition)
 
-    function open() {
+    // Compare da sé al focus, come i suggerimenti nativi del browser.
+    field.addEventListener("focus", () => {
       const usernameField = passwordField ? usernameFieldFor(passwordField) : field
-      showDropdown(button, passwordField, usernameField)
-    }
-
-    button.addEventListener("mousedown", (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      open()
+      showDropdown(field, passwordField, usernameField)
     })
 
-    // Compare da sé al focus, come i suggerimenti nativi del browser —
-    // niente bisogno di cliccare il lucchetto ogni volta.
-    field.addEventListener("focus", open)
+    // Scrivendo si sceglie a mano: il menu sparisce.
+    field.addEventListener("input", () => {
+      if (openField === field) closeDropdown()
+    })
   }
 
   function scan() {

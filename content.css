@@ -20,8 +20,7 @@
   all: initial;
   position: absolute;
   z-index: 2147483647;
-  min-width: 220px;
-  max-width: 320px;
+  box-sizing: border-box;
   max-height: 260px;
   overflow-y: auto;
   background: #f4f2eb;
