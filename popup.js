@@ -21,7 +21,7 @@ async function aggiorna() {
     if (res && res.unlocked) {
       pallino.classList.add("ok")
       titolo.textContent = "Hush è sbloccato"
-      testo.textContent = "Apri un campo password in una pagina e tocca il tasto 🔒 per compilarlo."
+      testo.textContent = "Tocca un campo email o password in una pagina: il menu compare da solo."
     } else if (res && res.hasVault) {
       titolo.textContent = "Hush è chiuso"
       testo.textContent = "Apri Hush sul Mac e sblocca il caveau."

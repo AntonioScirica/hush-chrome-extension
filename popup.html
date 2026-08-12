@@ -6,36 +6,59 @@
     body {
       margin: 0;
       width: 280px;
-      font-family: -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f4f2eb;
       color: #222220;
     }
-    .wrap { padding: 16px; }
-    h1 { font-size: 14px; margin: 0 0 8px; }
-    p { font-size: 12px; opacity: 0.7; line-height: 1.5; margin: 0 0 10px; }
-    .stato { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .pallino { width: 8px; height: 8px; border-radius: 50%; background: #b84034; flex-shrink: 0; }
+    .wrap { padding: 18px; }
+    .stato { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; line-height: 1; }
+    .pallino {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #b84034;
+      flex-shrink: 0;
+    }
     .pallino.ok { background: #4c8c5c; }
+    h1 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1;
+    }
+    p {
+      font-size: 12px;
+      opacity: 0.65;
+      line-height: 1.5;
+      margin: 0 0 12px;
+    }
     input {
       width: 100%;
       box-sizing: border-box;
-      font-family: ui-monospace, monospace;
+      font-family: ui-monospace, "SF Mono", monospace;
       font-size: 11px;
-      padding: 8px 10px;
-      border: 1.2px solid #222220;
+      padding: 9px 11px;
+      border: 1.5px solid #222220;
+      border-radius: 8px;
       background: #fff;
+      color: #222220;
       margin-bottom: 8px;
     }
+    input:focus { outline: 2px solid #f5b815; outline-offset: 1px; }
     button {
       width: 100%;
-      font-family: -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: 12px;
-      font-weight: 600;
-      padding: 9px;
-      border: 1.2px solid #222220;
+      font-weight: 700;
+      padding: 10px;
+      border: 1.5px solid #222220;
+      border-radius: 8px;
       background: #f5b815;
+      color: #222220;
       cursor: pointer;
     }
+    button:hover { background: #e8ac10; }
+    button:active { transform: translateY(1px); }
     a { color: #222220; }
   </style>
 </head>
@@ -46,7 +69,7 @@
     <div id="formToken" style="display:none">
       <p>Apri Hush sul Mac → Impostazioni → Estensione Chrome, copia il token e incollalo qui.</p>
       <input id="token" type="text" placeholder="token" />
-      <button id="salva">salva</button>
+      <button id="salva">Salva</button>
     </div>
   </div>
   <script src="popup.js"></script>
