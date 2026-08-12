@@ -33,13 +33,6 @@
     el.dispatchEvent(new Event("change", { bubbles: true }))
   }
 
-  function messaggioErrore(errore) {
-    if (errore === "non_collegato") return "Incolla il token di Hush nel popup dell'estensione."
-    if (errore === "locked") return "Hush è chiuso: apri l'app sul Mac."
-    if (errore === "ricarica") return "Estensione aggiornata: ricarica la pagina."
-    return "Hush non risponde: apri l'app."
-  }
-
   function positionAbove(box, field) {
     const r = field.getBoundingClientRect()
     box.style.left = window.scrollX + r.left + "px"
@@ -71,26 +64,18 @@
       .catch(() => ({ error: "ricarica" }))
       .then((res) => {
       if (openDropdown !== box) return
-      box.textContent = ""
+      // Niente da riempire (Hush chiuso, nessuna voce…): niente menu vuoto
+      // sopra il campo, meglio non mostrare nulla che un rettangolo inutile.
       if (!res || res.error) {
-        const empty = document.createElement("div")
-        empty.className = "hush-empty"
-        empty.textContent = messaggioErrore(res && res.error)
-        box.appendChild(empty)
-        positionAbove(box, field)
+        closeDropdown()
         return
       }
+      box.textContent = ""
       // Campo solo-email (password in un altro schermo): senza username
       // salvato non c'è nulla da riempire qui, inutile mostrare la voce.
       const entries = (res.entries || []).filter((e) => passwordField || e.username)
       if (entries.length === 0) {
-        const empty = document.createElement("div")
-        empty.className = "hush-empty"
-        empty.textContent = res.entries && res.entries.length > 0
-          ? "Le voci di questo sito non hanno un'email salvata: aggiungila in Hush."
-          : "Nessuna voce per questo sito."
-        box.appendChild(empty)
-        positionAbove(box, field)
+        closeDropdown()
         return
       }
       entries.forEach((entry) => {
