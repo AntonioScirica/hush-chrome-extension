@@ -45,39 +45,26 @@
 
   function showDropdown(field, passwordField, usernameField) {
     closeDropdown()
+    // Niente da mostrare finché non si sa se c'è qualcosa da riempire: il
+    // box non tocca il DOM finché non ci sono davvero voci, altrimenti si
+    // vede comparire e sparire da solo ("cerco…" seguito subito dal nulla).
     const box = document.createElement("div")
     box.className = "hush-dropdown"
     box.style.position = "absolute"
-    const loading = document.createElement("div")
-    loading.className = "hush-empty"
-    loading.textContent = "Hush · cerco…"
-    box.appendChild(loading)
-    document.documentElement.appendChild(box)
-    openDropdown = box
     openField = field
-    positionAbove(box, field)
 
     // Dopo un aggiornamento dell'estensione le pagine già aperte tengono il
-    // vecchio script col canale morto: senza catch resterebbe "cerco…" per sempre.
+    // vecchio script col canale morto: senza catch resterebbe appesa per sempre.
     Promise.resolve()
       .then(() => chrome.runtime.sendMessage({ type: "matches", host: location.hostname }))
       .catch(() => ({ error: "ricarica" }))
       .then((res) => {
-      if (openDropdown !== box) return
-      // Niente da riempire (Hush chiuso, nessuna voce…): niente menu vuoto
-      // sopra il campo, meglio non mostrare nulla che un rettangolo inutile.
-      if (!res || res.error) {
-        closeDropdown()
-        return
-      }
-      box.textContent = ""
+      if (openField !== field) return // il campo è cambiato o si è chiuso nel frattempo
+      if (!res || res.error) return
       // Campo solo-email (password in un altro schermo): senza username
       // salvato non c'è nulla da riempire qui, inutile mostrare la voce.
       const entries = (res.entries || []).filter((e) => passwordField || e.username)
-      if (entries.length === 0) {
-        closeDropdown()
-        return
-      }
+      if (entries.length === 0) return
       entries.forEach((entry) => {
         const row = document.createElement("div")
         row.className = "hush-row"
@@ -100,6 +87,8 @@
         })
         box.appendChild(row)
       })
+      document.documentElement.appendChild(box)
+      openDropdown = box
       positionAbove(box, field)
     })
   }
