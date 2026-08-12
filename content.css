@@ -8,7 +8,7 @@
   overflow-y: auto;
   background: #f4f2eb;
   border: 1.5px solid #222220;
-  border-radius: 10px;
+  border-radius: 0;
   padding: 4px;
   box-shadow: 0 6px 16px rgba(34, 34, 32, 0.18);
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -21,7 +21,7 @@
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   padding: 8px 10px;
   cursor: pointer;
-  border-radius: 7px;
+  border-radius: 0;
   color: #222220;
 }
 .hush-dropdown .hush-row:hover { background: #f5b815; }
@@ -51,6 +51,6 @@
 .hush-dropdown::-webkit-scrollbar { width: 6px; }
 .hush-dropdown::-webkit-scrollbar-thumb {
   background: rgba(34, 34, 32, 0.3);
-  border-radius: 3px;
+  border-radius: 0;
 }
 .hush-dropdown::-webkit-scrollbar-track { background: transparent; }
