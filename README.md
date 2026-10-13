@@ -9,17 +9,23 @@ installato e sbloccato.
 
 ## Installa
 
-1. [Scarica l'estensione](https://github.com/AntonioScirica/hush-chrome-extension/releases/latest/download/hush-chrome-extension.zip)
-   e fai doppio clic sul file per estrarre la cartella.
-2. In Chrome apri l'indirizzo `chrome://extensions`.
-3. Attiva **Modalità sviluppatore** (interruttore in alto a destra).
-4. Clicca **Carica estensione non pacchettizzata** e scegli la cartella estratta.
-5. In Hush vai in **Impostazioni**, premi **Copia token per Chrome**, poi apri
-   l'estensione (icona del puzzle in alto a destra in Chrome) e incolla il token.
+### ⬇️ [Aggiungi Hush a Chrome](https://chromewebstore.google.com/detail/hush/pfifohnafgmhkdfeahhpojbbehoigean)
+
+1. Apri il link qui sopra e premi **Aggiungi a Chrome**.
+2. In Hush vai in **Impostazioni**, premi **Copia token per Chrome**.
+3. In Chrome apri l'estensione (icona del puzzle in alto a destra) e incolla
+   il token.
 
 Fatto: quando tocchi un campo di login, sopra compare il menu con le voci di
 Hush per quel sito. Se non trovi la voce, cerca: guarda in tutto il tuo
 archivio, non solo tra le voci del sito.
+
+### Installazione manuale
+
+Per provare una versione non ancora sul Chrome Web Store:
+[scarica lo zip](https://github.com/AntonioScirica/hush-chrome-extension/releases/latest/download/hush-chrome-extension.zip),
+estrailo, apri `chrome://extensions`, attiva **Modalità sviluppatore** e
+scegli la cartella con **Carica estensione non pacchettizzata**.
 
 ## Come funziona
 
