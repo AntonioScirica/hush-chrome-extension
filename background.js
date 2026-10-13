@@ -34,5 +34,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     chiediAlBridge(`/matches?host=${host}`).then(sendResponse)
     return true
   }
+  if (message.type === "search") {
+    const q = encodeURIComponent(message.query || "")
+    chiediAlBridge(`/search?q=${q}`).then(sendResponse)
+    return true
+  }
   return false
 })
